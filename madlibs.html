@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Mad Lib Game</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* minimal inline styles for layout */
+    #quiz { max-width: 520px; margin: 24px auto; }
+    #controls { margin-top: 12px; }
+    #feedback { margin-top: 8px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <a href="index.html">Home</a>
+    <a href="resume.html">Resume</a>
+    <a href="photogallery.html">Photo Gallery</a>
+  </div>
+
+  <main id="quiz">
+    <h1>Mad Lib Game</h1>
+    <button id="startBtn">Start</button>
+
+    <div id="questionArea" style="display:none; margin-top:12px;">
+      <p id="prompt">Press Start to begin.</p>
+      <input id="entry" type="text" placeholder="Type a word here" aria-label="entry" />
+      <div id="controls">
+        <button id="startBtnInner" style="display:none;">Next</button>
+        <button id="restart">Restart</button>
+      </div>
+      <p id="feedback" style="margin-top:12px; font-weight:600;"></p>
+    </div>
+  </main>
+
+  <script>
+    const questions = ["adjective", "noun", "verb", "noun"];
+    const answers = [];
+    let idx = -1;
+
+    const promptEl = document.getElementById('prompt');
+    const entry = document.getElementById('entry');
+    const startBtn = document.getElementById('startBtn');
+    const questionArea = document.getElementById('questionArea');
+    const restart = document.getElementById('restart');
+    const feedbackEl = document.getElementById('feedback');
+
+    function updatePrompt() {
+      if (idx === -1) {
+        promptEl.textContent = 'Press Start to begin.';
+        entry.value = '';
+        questionArea.style.display = 'none';
+        startBtn.textContent = 'Start';
+      } else if (idx < questions.length) {
+        promptEl.textContent = `Please enter a ${questions[idx]}:`;
+        questionArea.style.display = '';
+        entry.disabled = false;
+        entry.focus();
+        startBtn.textContent = 'Next';
+      } else {
+        buildStory();
+        entry.value = '';
+        entry.disabled = true;
+        startBtn.textContent = 'Start Again';
+      }
+    }
+
+    function buildStory() {
+      const [adj1, noun1, verb1, noun2] = answers;
+      const story = `Yesterday, I saw a ${adj1} ${noun1} trying to ${verb1} a giant ${noun2}. It was so ${adj1} that I accidentally dropped my ${noun2} and started to ${verb1}!`;
+      feedbackEl.textContent = story;
+      promptEl.textContent = 'Here is your Mad Lib:';
+    }
+
+    startBtn.addEventListener('click', () => {
+      if (idx === -1) {
+        answers.length = 0;
+        idx = 0;
+        feedbackEl.textContent = '';
+        updatePrompt();
+      } else if (idx < questions.length) {
+        const val = entry.value.trim();
+        if (!val) { entry.focus(); return; }
+        answers.push(val);
+        entry.value = '';
+        idx++;
+        updatePrompt();
+      } else {
+        idx = -1;
+        updatePrompt();
+      }
+    });
+
+    entry.addEventListener('keydown', (e) => { if (e.key === 'Enter') startBtn.click(); });
+
+    restart.addEventListener('click', () => {
+      answers.length = 0;
+      idx = -1;
+      feedbackEl.textContent = '';
+      updatePrompt();
+    });
+
+    updatePrompt();
+  </script>
+</body>
+</html>

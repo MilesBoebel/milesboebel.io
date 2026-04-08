@@ -1,69 +1,64 @@
 <!DOCTYPE html>
+<html lang="en">
 <head>
+  <title>Resume</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
-<body style="font-family: Arial, sans-serif; background-color: #f2f2f2; text-align: center;">
+<body>
+  <div class="navbar">
+    <a href="index.html">Home</a>
+  </div>
 
-  <div style="width: 600px; margin: 20px auto;">
+  <div id="container">
+    <img src="StudiousMilesPicture.jpeg" id="profile">
 
-    <!-- Link to index page -->
-    <a href="index.html" 
-       style="color: navy; text-decoration: none;"
-       onmouseover="this.style.color='lightblue'"
-       onmouseout="this.style.color='navy'">
-       Home
-    </a>
-
-    <!-- Photo -->
-    <div style="margin: 20px 0;">
-      <img src="StudiousMilesPicture.jpeg" height="400">
-    </div>
-
-    <hr style="border: 3px solid navy; margin: 0;">
-    <div style="padding: 10px; margin: 10px 0; background-color: white;">
+    <div class="section">
       <strong>Name and Contact Info</strong>
       <br>Miles Boebel
       <br>7372816734
       <br>milesboebel@gmail.com
     </div>
 
-    <hr style="border: 3px solid navy; margin: 0;">
-    <div style="padding: 10px; margin: 10px 0; background-color: white;">
+    <div class="section">
       <strong>Work & Volunteer</strong>
       <br>2 Years as Prep Cook for J-Carvers
     </div>
 
-    <hr style="border: 3px solid navy; margin: 0;">
-    <div style="padding: 10px; margin: 10px 0; background-color: white;">
+    <div class="section">
       <strong>Education</strong>
       <br>GPA - 3.3
       <br>AP CS Principles
       <br>AP World History
     </div>
 
-    <hr style="border: 3px solid navy; margin: 0;">
-    <div style="padding: 10px; margin: 10px 0; background-color: white;">
+    <div class="section">
       <strong>Extracurricular Activities</strong>
       <br>Rowing
       <br>Track and Field
       <br>Soccer
     </div>
 
-    <hr style="border: 3px solid navy; margin: 0;">
-    <div style="padding: 10px; margin: 10px 0; background-color: white;">
+    <div class="section">
       <strong>Awards / Achievements</strong>
       <br>Elegant Rowing Award
       <br>Speedy Soccer Award
     </div>
 
-    <hr style="border: 3px solid navy; margin: 0;">
-    <div style="padding: 10px; margin: 10px 0; background-color: white;">
+    <div class="section">
       <strong>References</strong>
-      <br>Bill Boebel
-      <br>Father
-      <br>b@bb.co
+      <table>
+        <tr>
+          <th>Name</th>
+          <th>Relation</th>
+          <th>Email</th>
+        </tr>
+        <tr>
+          <td>Bill Boebel</td>
+          <td>Father</td>
+          <td>b@bb.co</td>
+        </tr>
+      </table>
     </div>
-
   </div>
-
 </body>
 </html>

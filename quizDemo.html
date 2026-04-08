@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>State Capitals Quiz</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    #quiz { max-width: 520px; margin: 24px auto; }
+    #controls { margin-top: 12px; }
+    #feedback { margin-top: 8px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <a href="index.html">Home</a>
+    <a href="resume.html">Resume</a>
+    <a href="photogallery.html">Photo Gallery</a>
+  </div>
+
+  <main id="quiz">
+    <h1>State Capitals Quiz</h1>
+    <button id="startBtn">Start Quiz</button>
+
+    <div id="questionArea" style="display:none;">
+      <p id="question"></p>
+      <input id="answer" type="text" placeholder="Type capital">
+      <div id="controls">
+        <button id="submitBtn">Submit</button>
+        <button id="nextBtn" disabled>Next</button>
+      </div>
+      <div id="feedback"></div>
+      <div id="score" style="margin-top:8px;"></div>
+    </div>
+  </main>
+
+<script>
+let quizdata = [
+  { state: "Alabama", capital: "Montgomery" },
+  { state: "Alaska", capital: "Juneau" },
+  { state: "Arizona", capital: "Phoenix" },
+  { state: "Arkansas", capital: "Little Rock" },
+  { state: "California", capital: "Sacramento" },
+  { state: "Colorado", capital: "Denver" },
+  { state: "Connecticut", capital: "Hartford" },
+  { state: "Delaware", capital: "Dover" },
+  { state: "Florida", capital: "Tallahassee" },
+  { state: "Georgia", capital: "Atlanta" }
+];
+
+let currentQuestion = -1;
+let score = 0;
+
+const startBtn = document.getElementById('startBtn');
+const questionArea = document.getElementById('questionArea');
+const questionEl = document.getElementById('question');
+const answerInput = document.getElementById('answer');
+const submitBtn = document.getElementById('submitBtn');
+const nextBtn = document.getElementById('nextBtn');
+const feedback = document.getElementById('feedback');
+const scoreEl = document.getElementById('score');
+
+startBtn.addEventListener('click', startQuiz);
+submitBtn.addEventListener('click', checkAnswer);
+nextBtn.addEventListener('click', nextQuestion);
+answerInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') submitBtn.click(); });
+
+function startQuiz() {
+  currentQuestion = 0;
+  score = 0;
+  startBtn.disabled = true;
+  questionArea.style.display = '';
+  feedback.textContent = '';
+  scoreEl.textContent = '';
+  loadQuestion();
+}
+
+function loadQuestion() {
+  const stateName = quizdata[currentQuestion].state;
+  questionEl.textContent = `What is the capital of ${stateName}?`;
+  answerInput.value = '';
+  answerInput.focus();
+  submitBtn.disabled = false;
+  nextBtn.disabled = true;
+  feedback.textContent = '';
+}
+
+function checkAnswer() {
+  const userAnswer = answerInput.value.trim();
+  const correctAnswer = quizdata[currentQuestion].capital;
+  if (!userAnswer) return;
+  if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
+    feedback.textContent = 'Correct!';
+    score++;
+  } else {
+    feedback.textContent = `Wrong — correct is ${correctAnswer}.`;
+  }
+  submitBtn.disabled = true;
+  nextBtn.disabled = false;
+  updateScoreDisplay();
+}
+
+function nextQuestion() {
+  currentQuestion++;
+  if (currentQuestion >= quizdata.length) {
+    finishQuiz();
+    return;
+  }
+  loadQuestion();
+}
+
+function finishQuiz() {
+  questionArea.style.display = 'none';
+  startBtn.disabled = false;
+  startBtn.textContent = 'Restart Quiz';
+  feedback.textContent = `Quiz finished. Final score: ${score} / ${quizdata.length}.`;
+  scoreEl.textContent = '';
+  currentQuestion = -1;
+}
+
+function updateScoreDisplay() {
+  scoreEl.textContent = `Score: ${score} / ${quizdata.length}`;
+}
+</script>
+</body>
+</html>
