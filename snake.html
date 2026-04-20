@@ -1,0 +1,209 @@
+  <div class="navbar">
+    <a href="index.html">Home</a>
+    <a href="snake.html">Snake</a>
+    <a href="maze.html">Maze</a>
+  </div>
+  <link rel="stylesheet" href="styles.css">
+
+<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 80vh;">
+      <h2>Snake Game</h2>
+      <p>
+          In the classic arcade game, Snake, you control a continuously moving line that grows longer each time it consumes food. 
+          The goal is to achieve the highest score possible by navigating the snake to eat while avoiding collisions with the      
+          screen boundaries or its own ever-expanding body.
+      </p>
+
+      <canvas id="gameCanvas" width="960" height="540" style="display: block; background-color: black; border: 5px solid white;"></canvas>
+      <p id="scoreDisplay">Score: 0</p>
+      <button onclick="startGame()">Start</button>
+</div>
+
+
+
+<script>
+
+    // ===== GLOBALS =====
+    let canvas, ctx;
+    let head;
+    let body = [];
+    let gameStarted = false;
+    let fruit;
+    let score = 0;
+    let gameOver = false;
+
+    // ===== CLASS =====
+    class Head {
+        constructor(x, y) {
+            this.x = x;
+            this.y = y;
+            this.size = 25;
+            this.color = "blue";
+            this.speed = 5;
+            this.dx = 0;
+            this.dy = 0;
+        }
+
+        draw(ctx) {
+            ctx.fillStyle = this.color;
+            ctx.fillRect(this.x, this.y, this.size, this.size);
+        }
+
+        move() {
+            this.x += this.dx;
+            this.y += this.dy;
+        }
+    }
+
+    class Fruit {
+        constructor() {
+            this.size = 25;
+            this.color = "red";
+            this.spawn();
+        }
+
+        spawn() {
+            do {
+                this.x = Math.floor(Math.random() * (canvas.width / this.size)) * this.size;
+                this.y = Math.floor(Math.random() * (canvas.height / this.size)) * this.size;
+            } while (isPositionOnSnake(this.x, this.y));
+        }
+
+        draw(ctx) {
+            ctx.fillStyle = this.color;
+            ctx.fillRect(this.x, this.y, this.size, this.size);
+        }
+    }
+
+    // ===== SETUP =====
+    function startGame() {
+        canvas = document.getElementById("gameCanvas");
+        ctx = canvas.getContext("2d");
+
+        head = new Head(200, 200);
+        body = [];
+        fruit = new Fruit();
+        score = 0;
+        gameOver = false;
+        updateScoreDisplay();
+
+        if (!gameStarted) {
+            document.addEventListener("keydown", handleKeys);
+            gameStarted = true;
+            gameLoop();
+        }
+    }
+
+    function updateScoreDisplay() {
+        document.getElementById("scoreDisplay").textContent = "Score: " + score;
+    }
+
+    function isPositionOnSnake(x, y) {
+        if (head && head.x === x && head.y === y) {
+            return true;
+        }
+        return body.some(segment => segment.x === x && segment.y === y);
+    }
+
+    function resetGame() {
+        head = new Head(200, 200);
+        body = [];
+        head.dx = 0;
+        head.dy = 0;
+        fruit.spawn();
+        score = 0;
+        gameOver = false;
+        updateScoreDisplay();
+    }
+
+    // ===== GAME LOOP =====
+    function gameLoop() {
+        update();
+        draw();
+        requestAnimationFrame(gameLoop);
+    }
+
+    function update() {
+        if (gameOver) return;
+
+        if (head.dx !== 0 || head.dy !== 0) {
+            body.unshift({ x: head.x, y: head.y });
+            if (body.length > score) {
+                body.pop();
+            }
+        }
+
+        head.move();
+
+        if (
+            !(head.x + head.size <= fruit.x ||
+              fruit.x + fruit.size <= head.x ||
+              head.y + head.size <= fruit.y ||
+              fruit.y + fruit.size <= head.y)
+        ) {
+            score++;
+            updateScoreDisplay();
+            fruit.spawn();
+        }
+
+        if (
+            head.x < 0 ||
+            head.x + head.size > canvas.width ||
+            head.y < 0 ||
+            head.y + head.size > canvas.height ||
+            body.some(segment => segment.x === head.x && segment.y === head.y)
+        ) {
+            gameOver = true;
+        }
+    }
+
+    // ===== DRAW =====
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        if (!gameOver) {
+            fruit.draw(ctx);
+
+            ctx.fillStyle = "lime";
+            body.forEach(segment => {
+                ctx.fillRect(segment.x, segment.y, head.size, head.size);
+            });
+
+            head.draw(ctx);
+        } else {
+            ctx.fillStyle = "white";
+            ctx.font = "48px Arial";
+            ctx.textAlign = "center";
+            ctx.fillText("Game Over", canvas.width / 2, canvas.height / 2);
+            ctx.font = "24px Arial";
+            ctx.fillText("Click Start to Restart", canvas.width / 2, canvas.height / 2 + 50);
+        }
+    }
+
+    // ===== CONTROLS =====
+    function handleKeys(e) {
+        if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
+            e.preventDefault();
+        }
+
+        if (e.key === "ArrowUp" && head.dy !== head.speed) {
+            head.dy = -head.speed;
+            head.dx = 0;
+        }
+
+        if (e.key === "ArrowDown" && head.dy !== -head.speed) {
+            head.dy = head.speed;
+            head.dx = 0;
+        }
+
+        if (e.key === "ArrowLeft" && head.dx !== head.speed) {
+            head.dy = 0;
+            head.dx = -head.speed;
+        }
+
+        if (e.key === "ArrowRight" && head.dx !== -head.speed) {
+            head.dy = 0;
+            head.dx = head.speed;
+        }
+    }
+
+</script>
